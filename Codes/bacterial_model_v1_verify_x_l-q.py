@@ -1,7 +1,6 @@
 import warnings
 warnings.filterwarnings('ignore')
 import numpy as np
-import scipy.stats as st
 import pandas as pd
 import pickle
 
@@ -121,15 +120,15 @@ for i in range(len(x_l)):
         rhos = np.array(rhos)
         if (rhos < 0).any() == False:
             tot_rho_final[i,j] = tot_rho[-1]
-            tot_rho_profile[f"{x_l[i]:.2f} - {q[j]:.2f}"] = tot_rho
-            final_profile_rho[f"{x_l[i]:.2f} - {q[j]:.2f}"] = rhos[-1]
-            final_profile_S[f"{x_l[i]:.2f} - {q[j]:.2f}"] = Ss[-1]
+            tot_rho_profile[f"{x_l[i]:.2f} - {qs[j]:.2f}"] = tot_rho
+            final_profile_rho[f"{x_l[i]:.2f} - {qs[j]:.2f}"] = rhos[-1]
+            final_profile_S[f"{x_l[i]:.2f} - {qs[j]:.2f}"] = Ss[-1]
         else:
-            print(f"Deu erro aqui. x_l = {x_l[i]:1f} - q = {q[j]:.2f}")
+            print(f"Deu erro aqui. x_l = {x_l[i]:1f} - q = {qs[j]:.2f}")
             tot_rho_final[i,j] = np.nan
-            tot_rho_profile[f"{x_l[i]:.2f} - {q[j]:.2f}"] = np.nan
-            final_profile_rho[f"{x_l[i]:.2f} - {q[j]:.2f}"] = np.nan
-            final_profile_S[f"{x_l[i]:.2f} - {q[j]:.2f}"] = np.nan
+            tot_rho_profile[f"{x_l[i]:.2f} - {qs[j]:.2f}"] = np.nan
+            final_profile_rho[f"{x_l[i]:.2f} - {qs[j]:.2f}"] = np.nan
+            final_profile_S[f"{x_l[i]:.2f} - {qs[j]:.2f}"] = np.nan
 
 print("Simulations done!")
 try:
