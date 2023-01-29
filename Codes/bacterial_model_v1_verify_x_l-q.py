@@ -5,6 +5,8 @@ import scipy.stats as st
 import pandas as pd
 import pickle
 
+print("Welcome to the ultra cool bacterial dynamics simulator \n")
+
 # Solving the differential equation
 def solve_model(t, rho, S, x_min, x_max, t_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta):
     # Defining the step in space and time
@@ -107,7 +109,7 @@ tot_rho_profile = {}
 final_profile_rho = {}
 final_profile_S = {}
 
-print('Ready to run simulations. Varying x_l and q.')
+print('\n Ready to run simulations. Varying x_l and q.')
 
 for i in range(len(x_l)):
     print(f"\n Run {i+1} of {len(x_l)} \n", end = "\r")
@@ -115,7 +117,7 @@ for i in range(len(x_l)):
         S = np.zeros(n)
         # S[50] = 5
         rho = np.random.uniform(0.05, 0.1, n)
-        rhos, Ss, tot_rho, tot_S = solve_model(t, rho, S, 0, 10, t_final, n, D_s, D_b, chi, r, k, lambd, t_c, x_l[i], qs[j], beta, progress = False)
+        rhos, Ss, tot_rho, tot_S = solve_model(t, rho, S, 0, 10, t_final, n, D_s, D_b, chi, r, k, lambd, t_c, x_l[i], qs[j], beta)
         rhos = np.array(rhos)
         if (rhos < 0).any() == False:
             tot_rho_final[i,j] = tot_rho[-1]
