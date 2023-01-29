@@ -99,20 +99,23 @@ x = np.linspace(x_min, x_max, n)
 t = np.arange(0, t_final, dt)
 
 x_l = np.arange(0.25, 10, 0.25)
-D_s = np.linspace(1e-3, 1e-1, 15)
+qs = np.linspace(0.1, 1, 15)
 
-tot_rho_final = np.zeros((len(x_l), len(D_s)))
+tot_rho_final = np.zeros((len(x_l), len(qs)))
 n = 100
 tot_rho_profile = {}
 final_profile_rho = {}
 final_profile_S = {}
 
+print('Ready to run simulations. Varying x_l and q.')
+
 for i in range(len(x_l)):
-    for j in range(len(q)):
+    print(f"\n Run {i+1} of {len(x_l)} \n", end = "\r")
+    for j in range(len(qs)):
         S = np.zeros(n)
         # S[50] = 5
         rho = np.random.uniform(0.05, 0.1, n)
-        rhos, Ss, tot_rho, tot_S = solve_model(t, rho, S, 0, 10, t_final, n, D_s, D_b, chi, r, k, lambd, t_c, x_l[i], q, beta, progress = False)
+        rhos, Ss, tot_rho, tot_S = solve_model(t, rho, S, 0, 10, t_final, n, D_s, D_b, chi, r, k, lambd, t_c, x_l[i], qs[j], beta, progress = False)
         rhos = np.array(rhos)
         if (rhos < 0).any() == False:
             tot_rho_final[i,j] = tot_rho[-1]
@@ -126,11 +129,13 @@ for i in range(len(x_l)):
             final_profile_rho[f"{x_l[i]:.2f} - {q[j]:.2f}"] = np.nan
             final_profile_S[f"{x_l[i]:.2f} - {q[j]:.2f}"] = np.nan
 
+print("Simulations done!")
 try:
     pd.DataFrame(final_profile_rho).to_csv('final_rho_profile_varying_x_l-q.csv')
     pd.DataFrame(final_profile_S).to_csv('final_S_profile_varying_x_l-q.csv')
     pd.DataFrame(tot_rho_profile).to_csv('temporal_N_profile_varying_x_l-q.csv')
 except:
+    print('Could not save files as DataFrames, saving using Pickle instead')
     with open('final_rho_profile_varying_x_l-q.pkl', "wb") as fp:
         pickle.dump(final_profile_rho, fp)
     with open('final_S_profile_varying_x_l-q.pkl', "wb") as fp:
@@ -139,3 +144,5 @@ except:
         pickle.dump(tot_rho_profile, fp)
 
 np.savetxt('final_population_varying_x_l-q.txt', tot_rho_final)
+
+print('DONE! :)')
