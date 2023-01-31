@@ -4,26 +4,29 @@ import numpy as np
 import pandas as pd
 import pickle
 from tqdm import tqdm
+import matplotlib.pyplot as plt
 
 print("\nWelcome to the ultra cool bacterial dynamics simulator \n")
 
 # Solving the differential equation
-def solve_model(t, rho, S, x_min, x_max, t_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta):
+def solve_model(rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta):
     # Defining the step in space and time
     dx = (x_max - x_min)/n
     dt = dx**2 / (64*D_b)
+    # print(dt)
+    # print(t_c/dt)
     # Defining space
     x = np.linspace(x_min, x_max, n)
     # Array of derivatives
     drhodt = np.empty(n)
     dSdt = np.empty(n)
     # Defining time
-    t = np.arange(0, t_max, dt)
+    #t = np.arange(0, t_max, dt)
     
     # Array of solutions for density and concentration
     rhos = [rho]
     Ss = [S]
-    tot_rho = [np.sum(rho*dx)]
+    tot_rho = [np.sum(rho*dx), np.sum(rho*dx)]
     tot_S = [np.sum(S*dx)]
     
     #Dirac delta function
@@ -33,9 +36,16 @@ def solve_model(t, rho, S, x_min, x_max, t_max, n, D_s, D_b, chi, r, k, lambd, t
     gamma = r/k
     
     # Loop in time
-    for i in range(len(t)):
+    i = 0
+    while i < 2000000:
+        # if i % 1000 == 0:
+        #     print(f"{i+1}/2000000. Substance is released in i = {int(t_c/dt)}", end = "\r")
+        if np.abs(tot_rho[-1] - tot_rho[-2]) < 1e-7 and dt*i > 1.1*t_c:
+            break
+        i += 1
+    #for i in range(len(t)):
         # Loop in space
-        if t[i] < t_c:
+        if dt*i < t_c:
             q_eff = 0
         else:
             q_eff = q
@@ -63,7 +73,7 @@ def solve_model(t, rho, S, x_min, x_max, t_max, n, D_s, D_b, chi, r, k, lambd, t
         Ss.append(S)
         tot_rho.append(np.sum(rho*dx))
         tot_S.append(np.sum(S*dx))
-    return rhos, Ss, tot_rho, tot_S
+    return rhos, Ss, tot_rho, tot_S, i, dx
 
 n = 100
 center = 0
@@ -78,15 +88,15 @@ beta = 0.5
 
 D_b = 1e-2
 D_s = 5e-2
-t_final = 2200
+#t_final = 2200
 t_c = 200
 
 # Initial condition
 S = np.zeros(n)
 rho = np.random.uniform(0.05, 0.1, n)
 
-x_max = np.arange(1, 20, 0.5)
-q_s = np.arange(0.1, 1, 0.05)
+x_max = np.arange(1, 30, 0.5)
+q_s = np.arange(0.05, 1, 0.05)
 
 tot_rho_final = np.zeros((len(x_max), len(q_s)))
 n = 100
@@ -95,6 +105,8 @@ final_profile_S = {}
 tot_rho_profile = {}
 
 print('\nReady to run simulations. Varying L and q \n')
+
+#rhos, Ss, tot_rho, tot_S, idx, dx = solve_model(rho, S, 0, 10, n, D_s, D_b, chi, r, k, lambd, t_c, 5, 0.6, beta)
 
 for i in range(len(x_max)):
     for j in range(len(q_s)):
@@ -111,12 +123,9 @@ for i in range(len(x_max)):
         # Create the space
         x = np.arange(0, x_max[i], dx)
 
-        # Create time array
-        t = np.arange(0, t_final, dt)
-
         # S[50] = 5
         rho = np.random.uniform(0.05, 0.1, n)
-        rhos, Ss, tot_rho, tot_S = solve_model(t, rho, S, 0, x_max[i], t_final, n, D_s, D_b, chi, r, k, lambd, t_c, x_max[i]/2, q_s[j], beta)
+        rhos, Ss, tot_rho, tot_S, idx, dx = solve_model(rho, S, 0, x_max[i], n, D_s, D_b, chi, r, k, lambd, t_c, x_max[i]/2, q_s[j], beta)
         rhos = np.array(rhos)
         Ss = np.array(Ss)
         if (rhos < 0).any() == False:
