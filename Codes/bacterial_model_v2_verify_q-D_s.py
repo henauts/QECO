@@ -19,10 +19,9 @@ q = 0.6
 beta = 0.5
 
 D_b = 1e-2
-D_s = 5e-2
 t_max = 1000000
 t_c = 200
-dt_size = 100
+dt_size = 128
 
 # Initial condition
 S = np.zeros(n)
@@ -90,4 +89,4 @@ except:
 
 np.savetxt('final_population_varying_q_s-D_s.txt', tot_rho_final)
 
-print('DONE! :)')
+print('\nDONE! :)')
