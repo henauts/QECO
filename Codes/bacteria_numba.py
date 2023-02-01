@@ -5,10 +5,10 @@ from numba import njit
 
 # Solving the differential equation
 @njit
-def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta):
+def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta, dt_size):
     # Defining the step in space and time
     dx = (x_max - x_min)/n
-    dt = dx**2 / (64*D_b)
+    dt = dx**2 / (2*dt_size*D_b)
     # print(dt)
     # print(t_c/dt)
     # Defining space
