@@ -22,12 +22,13 @@ D_b = 1e-2
 D_s = 5e-2
 t_max = 1000000
 t_c = 200
+dt_size = 128
 
 # Initial condition
 S = np.zeros(n)
 rho = np.random.uniform(0.05, 0.1, n)
 
-x_max = np.arange(1, 30, 0.5)
+x_max = np.arange(1, 25, 0.5)
 q_s = np.arange(0.05, 1, 0.05)
 
 tot_rho_final = np.zeros((len(x_max), len(q_s)))
@@ -36,7 +37,7 @@ final_profile_rho = {}
 final_profile_S = {}
 tot_rho_profile = {}
 
-test = solve_model(5, rho, S, 0, 10, n, D_s, D_b, chi, r, k, lambd, 1, 5, 0.6, beta)
+test = solve_model(5, rho, S, 0, 10, n, D_s, D_b, chi, r, k, lambd, 1, 5, 0.6, beta, 68)
 
 print('\nReady to run simulations. Varying L and q \n')
 
@@ -57,7 +58,7 @@ for i in range(len(x_max)):
 
         # S[50] = 5
         rho = np.random.uniform(0.05, 0.1, n)
-        rhos, Ss, tot_rho, tot_S, idx, dx, dt, x = solve_model(t_max, rho, S, 0, x_max[i], n, D_s, D_b, chi, r, k, lambd, t_c, x_max[i]/2, q_s[j], beta)
+        rhos, Ss, tot_rho, tot_S, idx, dx, dt, x = solve_model(t_max, rho, S, 0, x_max[i], n, D_s, D_b, chi, r, k, lambd, t_c, x_max[i]/2, q_s[j], beta, dt_size)
         rhos = np.array(rhos)
         Ss = np.array(Ss)
         if (rhos < 0).any() == False:
