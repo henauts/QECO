@@ -27,10 +27,11 @@ dt_size = 128
 S = np.zeros(n)
 rho = np.random.uniform(0.05, 0.1, n)
 
-x_max = np.arange(1, 20, 1)
-D_ss = np.linspace(4e-3, 1e-1, 15)
+x_max = np.arange(4, 22, 1)
+D_ss = np.linspace(5e-3, 1e-1, 15)
 
 tot_rho_final = np.zeros((len(x_max), len(D_ss)))
+time_to_equilibrium = np.zeros((len(x_max), len(D_ss)))
 n = 100
 final_profile_rho = {}
 final_profile_S = {}
@@ -61,12 +62,14 @@ for i in range(len(x_max)):
         rhos = np.array(rhos)
         Ss = np.array(Ss)
         if (rhos < 0).any() == False:
+            time_to_equilibrium[i,j] = idx*dt
             tot_rho_final[i,j] = tot_rho[-1]
             final_profile_rho[f"{x_max[i]:.2f} - {D_ss[j]:.2f}"] = rhos[-1]
             final_profile_S[f"{x_max[i]:.2f} - {D_ss[j]:.2f}"] = Ss[-1]
             tot_rho_profile[f"{x_max[i]:.2f} - {D_ss[j]:.2f}"] = tot_rho
         else:
             print(f"There was an error. x_max = {x_max[i]:.1f} - D_s = {D_ss[j]:.3f}")
+            time_to_equilibrium[i,j] = np.nan
             tot_rho_final[i,j] = np.nan
             final_profile_rho[f"{x_max[i]:.2f} - {D_ss[j]:.2f}"] = np.nan
             final_profile_S[f"{x_max[i]:.2f} - {D_ss[j]:.2f}"] = np.nan
@@ -88,5 +91,6 @@ except:
         pickle.dump(tot_rho_profile, fp)
 
 np.savetxt('final_population_varying_L-D_s.txt', tot_rho_final)
+np.savetxt('time_to_equilibrium_varying_L-D_s.txt', time_to_equilibrium)
 
 print('\nDONE! :)')
