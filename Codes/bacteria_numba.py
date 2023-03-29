@@ -37,7 +37,7 @@ def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c,
         # print(rho)
         if i % 20000 == 0:
              print("Still computing... step:", i)
-        if np.abs(tot_rho[-1] - tot_rho[-2]) < 1e-8 and dt*i > 2*t_c:
+        if np.abs(tot_rho[-1] - tot_rho[-2]) < 1e-9 and dt*i > 2*t_c:
             break
         i += 1
     #for i in range(len(t)):

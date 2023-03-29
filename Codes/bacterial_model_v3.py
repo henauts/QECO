@@ -18,13 +18,13 @@ gamma = r/k
 lambd = 0.03
 q = 0.6
 beta = 0.5
-alpha = float(sys.argv[2])
+alpha = 1
 
 D_b = 1e-2
 D_s = 5e-2
 #D_s = 1e-1
 t_c = 200
-t_f = 800
+t_f = int(sys.argv[2])
 t_max = 1000000#*(t_c/128)
 dt_size = 128
 x_max = 10
@@ -65,8 +65,8 @@ print('\nΔx = ', dx)
 
 # np.savetxt(f'Results/Densities_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', rhos)
 # np.savetxt(f'Results/Concentrations_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', Ss)
-np.savetxt(f'Results/Total_pop_bacterial_model_v3_chemotatic_ones_chi={chi}_alpha={alpha}.txt', tot_rho1)
-np.savetxt(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_alpha={alpha}.txt', tot_rho2)
-np.savetxt(f'Results/delta_t_bacterial_model_v3_chi={chi}_alpha={alpha}.txt', np.array([dt]))
+np.savetxt(f'Results/Total_pop_bacterial_model_v3_chemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho1)
+np.savetxt(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho2)
+np.savetxt(f'Results/delta_t_bacterial_model_v3_chi={chi}_t_f={t_f}.txt', np.array([dt]))
 
 print('\nDONE! :)')
