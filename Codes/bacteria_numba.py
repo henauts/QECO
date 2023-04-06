@@ -5,7 +5,7 @@ from numba import njit
 
 # Solving the differential equation
 @njit
-def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta, dt_size):
+def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta, S_plus, S_minus, S_max, dt_size):
     # Defining the step in space and time
     dx = (x_max - x_min)/n
     dt = dx**2 / (2*dt_size*D_b)
@@ -42,7 +42,7 @@ def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c,
         i += 1
     #for i in range(len(t)):
         # Loop in space
-        if dt*i < t_c:
+        if i < t_c:
             q_eff = 0
         else:
             q_eff = q
@@ -52,15 +52,18 @@ def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c,
         rho[n-1] = rho[n-2]
         for j in range(1,n-1):
             # Substance diffusion and degradetion
-            dSdt[j] = D_s*((S[j+1] - S[j])/dx**2 - (S[j]-S[j-1])/dx**2) - lambd*S[j]*rho[j] + q_eff*dirac[j]
+            dSdt[j] = D_s*((S[j+1] - S[j])/dx**2 - (S[j]-S[j-1])/dx**2) - lambd*(S[j]/(S[j] + S_max))*rho[j] + q_eff*dirac[j]
             # Chemotaxis
-            chem = chi*(((rho[j+1] - rho[j-1])*(S[j+1] - S[j-1])/(4*dx**2)) + rho[j]*((S[j+1] - 2*S[j] + S[j-1])/dx**2))
+            f_front = np.log((1 + S[j+1]/S_minus)/(1 + S[j+1]/S_plus)) # Logarithm gradient
+            f_middle = np.log((1 + S[j]/S_minus)/(1 + S[j]/S_plus)) # Logarithm gradient
+            f_back = np.log((1 + S[j-1]/S_minus)/(1 + S[j-1]/S_plus)) # Logarithm gradient
+            chem = chi*(((rho[j+1] - rho[j-1])*(f_front - f_back)/(4*dx**2)) + rho[j]*((f_front - 2*f_middle + f_back)/dx**2))
             # Growth
             growth = r*rho[j]
             # Competition
             competition = gamma*rho[j]**2
             # Death by consumption
-            death = lambd*beta*rho[j]*S[j]
+            death = lambd*beta*rho[j]*(S[j]/(S[j] + S_max))
             # Bacterial equation
             drhodt[j] = D_b*((rho[j+1] - 2*rho[j] + rho[j-1])/dx**2) + chem + growth - competition - death
         #print(drhodt)
