@@ -7,10 +7,10 @@ import matplotlib.pyplot as plt
 
 print('\nRunning loop for checking chi and t_f!\n')
 
-final_populations1 = np.zeros((251,50))
-final_populations2 = np.zeros((251,50))
-final_times = np.zeros((251,50))
-chis = np.logspace(-5, -1, 125)
+final_populations1 = np.zeros((251,31))
+final_populations2 = np.zeros((251,31))
+final_times = np.zeros((251,31))
+chis = np.linspace(-0.3, 0.3, 251)
 # final_populations = np.zeros(200)
 # final_times = np.zeros(200)
 if os.path.exists('Results') == False:
@@ -60,7 +60,7 @@ np.savetxt('Results/final_times_chi_and_t_f_substance_middle.txt', final_times)
 #         os.remove(f'Results/Total_pop_bacterial_model_v2_chi={chi}_q=1.txt')
 #         os.remove(f'Results/delta_t_bacterial_model_v2_chi={chi}_q=1.txt')
 start_test_time = time.time()
-bashCommand = f"python bacterial_model_v3.py {chis[10]} {600}"
+bashCommand = f"python bacterial_model_v3.py {chis[10]} {150}"
 process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
 output, error = process.communicate()
 end_test_time = time.time()
@@ -71,20 +71,15 @@ print('\nStarting loop, relax and chill ;D\n')
 idx = 0
 start_time = time.time()
 for i in range(251):
-    if i < 125:
-        chi = -np.flip(chis)[i]
-    elif i == 125:
-        chi = float(0)
-    else:
-        chi = chis[i-126]
-    for j in range(50):
-        t_f = 220 + 20*j
+    chi = chis[i]
+    for j in range(31):
+        t_f = 110 + 3*j
         idx += 1
         end_time = time.time()
         # if idx <= 50:
         #     print(f'\nRun in i = {i+1} of 250, j = {j+1} of 50... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)')
         # else:
-        print(f'Run in i = {i+1} of 250, j = {j+1} of 50... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)', end = '\r')
+        print(f'Run in i = {i+1} of 251, j = {j+1} of 31... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)', end = '\r')
         bashCommand = f"python bacterial_model_v3.py {chi} {t_f}"
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
@@ -115,8 +110,8 @@ print('\nLoop finished :) trying preliminary plot of results\n')
 
 data1 = np.loadtxt('Results/final_populations_chi_and_t_f_substance_middle_chemotatic.txt')
 data2 = np.loadtxt('Results/final_populations_chi_and_t_f_substance_middle_nonchemotatic.txt')
-chi = np.concatenate((-np.flip(chis), [0], chis))
-t_f = np.array([float(200 + 20*j) for j in range(50)])
+chi = chis
+t_f = np.array([float(110 + 3*j) for j in range(31)])
 
 try:
     X, Y = np.meshgrid(t_f, chi)

@@ -5,25 +5,26 @@ import time
 from bacteria_numba_natural_selection import solve_model
 import sys
 import os
+import matplotlib.pyplot as plt
 
 if os.path.exists('Results') == False:
     os.makedirs('Results')
 
 print("\nWelcome to the ultra cool bacterial dynamics simulator \n")
 
-r = 0.05
-k = 0.8
+r = 0.69
+k = 0.1
 chi = float(sys.argv[1])
 gamma = r/k
-lambd = 0.03
-q = 0.6
-beta = 0.5
+lambd = 1.25
+q = 2
+beta = 1
 alpha = 1
 
-D_b = 1e-2
-D_s = 5e-2
+D_b = 50.2/3600 # μm²/h
+D_s = 800/3600 # μm²/h
 #D_s = 1e-1
-t_c = 200
+t_c = 100
 t_f = int(sys.argv[2])
 t_max = 1000000#*(t_c/128)
 dt_size = 128
@@ -34,7 +35,7 @@ n = 100
 
 # Initial condition
 S = np.zeros(n)
-rho1 = np.random.uniform(0.05, 0.1, n)
+rho1 = np.random.uniform(0.04, 0.04, n)
 rho2 = rho1.copy()
 
 print('\nReady to run simulations. Making a test before starting \n')
@@ -45,7 +46,7 @@ print("\nTest concluded. Proceeding with simulation... \n")
 
 # Initial condition
 S = np.zeros(n)
-rho1 = np.random.uniform(0.05, 0.1, n)
+rho1 = np.random.uniform(0.04, 0.04, n)
 rho2 = rho1.copy()
 
 start_time = time.time()
@@ -63,10 +64,15 @@ print('\nFinal interaction = ', idx)
 print('\nΔt = ', dt)
 print('\nΔx = ', dx)
 
+plt.plot(tot_rho1)
+plt.plot(tot_rho2)
+# plt.plot(tot_S)
+plt.show()
+
 # np.savetxt(f'Results/Densities_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', rhos)
 # np.savetxt(f'Results/Concentrations_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', Ss)
-np.savetxt(f'Results/Total_pop_bacterial_model_v3_chemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho1)
-np.savetxt(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho2)
-np.savetxt(f'Results/delta_t_bacterial_model_v3_chi={chi}_t_f={t_f}.txt', np.array([dt]))
+# np.savetxt(f'Results/Total_pop_bacterial_model_v3_chemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho1)
+# np.savetxt(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho2)
+# np.savetxt(f'Results/delta_t_bacterial_model_v3_chi={chi}_t_f={t_f}.txt', np.array([dt]))
 
 print('\nDONE! :)')
