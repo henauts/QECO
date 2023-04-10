@@ -12,6 +12,7 @@ if os.path.exists('Results') == False:
 
 print("\nWelcome to the ultra cool bacterial dynamics simulator \n")
 
+<<<<<<< HEAD
 r = 0.69 # h⁻¹
 k = 0.1
 # chi = 315/3600 # μm²/h
@@ -19,6 +20,14 @@ chi = float(sys.argv[1])
 gamma = r/k
 lambd = 1.25 # mM/OD600*h
 q = 3 # μM/h
+=======
+r = 0.69
+k = 0.1
+chi = float(sys.argv[1])
+gamma = r/k
+lambd = 1.25
+q = 2
+>>>>>>> e0e52f762bd69cfbf8f31bdf00a97f79ea24c4ba
 beta = 1
 alpha = 1
 
@@ -72,6 +81,10 @@ print('\nΔx = ', dx)
 
 # plt.plot(tot_rho1)
 # plt.plot(tot_rho2)
+<<<<<<< HEAD
+=======
+# # plt.plot(tot_S)
+>>>>>>> e0e52f762bd69cfbf8f31bdf00a97f79ea24c4ba
 # plt.show()
 
 # np.savetxt(f'Results/Densities_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', rhos)

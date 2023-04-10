@@ -17,7 +17,11 @@ k = 0.1
 chi = 315/3600 # μm²/h
 gamma = r/k
 lambd = 1.25 # mM/OD600*h
+<<<<<<< HEAD
 q = 2 # μM/h
+=======
+q = 1 # μM/h # M is a unit of concentration representing the number of millimols dissolved in 1 liter of solvent
+>>>>>>> e0e52f762bd69cfbf8f31bdf00a97f79ea24c4ba
 beta = 1
 
 D_b = 50.2/3600 # μm²/h
