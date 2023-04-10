@@ -5,18 +5,26 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
+print('\n\n\n\n\n\n\n')
+
+print('Welcome to the ultra cool simulator. The code is about to run, to stop it at any moment press ctrl+C.')
+
 print('\nRunning loop for checking chi and t_f!\n')
 
-final_populations1 = np.zeros((251,50))
-final_populations2 = np.zeros((251,50))
-final_times = np.zeros((251,50))
-chis = np.logspace(-5, -1, 125)
+final_populations1 = np.zeros((251,30))
+final_populations2 = np.zeros((251,30))
+population1_tf = np.zeros((251,30))
+population2_tf = np.zeros((251,30))
+final_times = np.zeros((251,30))
+chis = np.linspace(-0.3, 0.3, 251)
 # final_populations = np.zeros(200)
 # final_times = np.zeros(200)
 if os.path.exists('Results') == False:
     os.makedirs('Results')
 np.savetxt('Results/final_populations_chi_and_t_f_substance_middle_chemotatic.txt', final_populations1)
 np.savetxt('Results/final_populations_chi_and_t_f_substance_middle_nonchemotatic.txt', final_populations2)
+np.savetxt('Results/populations_at_t_f_chi_and_t_f_substance_middle_chemotatic.txt', population1_tf)
+np.savetxt('Results/populations_at_t_f_chi_and_t_f_substance_middle_nonchemotatic.txt', population2_tf)
 np.savetxt('Results/final_times_chi_and_t_f_substance_middle.txt', final_times)
 # np.savetxt('Results/final_populations_chi_substance_middle_q=1.txt', final_populations)
 
@@ -59,32 +67,33 @@ np.savetxt('Results/final_times_chi_and_t_f_substance_middle.txt', final_times)
 #         np.savetxt('Results/final_times_chi_substance_middle_q=1.txt', final_time)
 #         os.remove(f'Results/Total_pop_bacterial_model_v2_chi={chi}_q=1.txt')
 #         os.remove(f'Results/delta_t_bacterial_model_v2_chi={chi}_q=1.txt')
-start_test_time = time.time()
-bashCommand = f"python bacterial_model_v3.py {chis[10]} {600}"
-process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-output, error = process.communicate()
-end_test_time = time.time()
-exec_test_time = (end_test_time - start_test_time)
-print(f'One execution takes {exec_test_time:.2f} seconds. {int(final_populations1.shape[0]*final_populations1.shape[1])} executions will take an estimated time of {int(final_populations1.shape[0]*final_populations1.shape[1])*exec_test_time/3600:.2f} hours.')
+
+print('\nInitiating tests to estimate time...\n')
+times_tests = []
+for i in range(2):
+    for j in range(2):
+        start_test_time = time.time()
+        bashCommand = f"python bacterial_model_v3.py {chis[10*(2*i+1)]} {110 + 10*(j+1)}"
+        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        end_test_time = time.time()
+        exec_test_time = (end_test_time - start_test_time)
+        times_tests.append(exec_test_time)
+print(f'\nOne execution takes {np.mean(times_tests):.2f} +/- {np.std(times_tests):.2f} seconds. {int(final_populations1.shape[0]*final_populations1.shape[1])} executions will take an estimated time of {int(final_populations1.shape[0]*final_populations1.shape[1])*np.mean(times_tests)/3600:.2f} +/- {int(final_populations1.shape[0]*final_populations1.shape[1])*np.std(times_tests)/3600:.2f} hours.\n')
 
 print('\nStarting loop, relax and chill ;D\n')
 idx = 0
 start_time = time.time()
 for i in range(251):
-    if i < 125:
-        chi = -np.flip(chis)[i]
-    elif i == 125:
-        chi = float(0)
-    else:
-        chi = chis[i-126]
-    for j in range(50):
-        t_f = 220 + 20*j
+    chi = chis[i]
+    for j in range(30):
+        t_f = 110 + 3*j
         idx += 1
         end_time = time.time()
         # if idx <= 50:
-        #     print(f'\nRun in i = {i+1} of 250, j = {j+1} of 50... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)')
+        #     print(f'\nRun in i = {i+1} of 250, j = {j+1} of 30... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)')
         # else:
-        print(f'Run in i = {i+1} of 250, j = {j+1} of 50... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)', end = '\r')
+        print(f'Run in i = {i+1} of 251, j = {j+1} of 30... Parameter values - chi: {chi:.3f}, t_f: {t_f}... excution time: {(end_time - start_time)/3600:.2f} hours... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)', end = '\r')
         bashCommand = f"python bacterial_model_v3.py {chi} {t_f}"
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
@@ -92,9 +101,13 @@ for i in range(251):
         pop2 = np.loadtxt(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_t_f={t_f}.txt')
         final_pop1 = np.loadtxt('Results/final_populations_chi_and_t_f_substance_middle_chemotatic.txt')
         final_pop2 = np.loadtxt('Results/final_populations_chi_and_t_f_substance_middle_nonchemotatic.txt')
+        pop1_tf = np.loadtxt('Results/populations_at_t_f_chi_and_t_f_substance_middle_chemotatic.txt')
+        pop2_tf = np.loadtxt('Results/populations_at_t_f_chi_and_t_f_substance_middle_nonchemotatic.txt')
         final_pop1[i,j] = pop1[-1]
         final_pop2[i,j] = pop2[-1]
         dt = np.loadtxt(f'Results/delta_t_bacterial_model_v3_chi={chi}_t_f={t_f}.txt')
+        pop1_tf[i,j] = pop1[int(np.round(t_f/dt))]
+        pop2_tf[i,j] = pop2[int(np.round(t_f/dt))]
         final_time = np.loadtxt('Results/final_times_chi_and_t_f_substance_middle.txt')
         final_time[i,j] = len(pop1)*dt
         # if idx <= 100:
@@ -105,6 +118,8 @@ for i in range(251):
         np.savetxt('Results/final_times_chi_and_t_f_substance_middle.txt', final_time)
         np.savetxt('Results/final_populations_chi_and_t_f_substance_middle_chemotatic.txt', final_pop1)
         np.savetxt('Results/final_populations_chi_and_t_f_substance_middle_nonchemotatic.txt', final_pop2)
+        np.savetxt('Results/populations_at_t_f_chi_and_t_f_substance_middle_chemotatic.txt', pop1_tf)
+        np.savetxt('Results/populations_at_t_f_chi_and_t_f_substance_middle_nonchemotatic.txt', pop2_tf)
         os.remove(f'Results/Total_pop_bacterial_model_v3_chemotatic_ones_chi={chi}_t_f={t_f}.txt')
         os.remove(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_t_f={t_f}.txt')
         os.remove(f'Results/delta_t_bacterial_model_v3_chi={chi}_t_f={t_f}.txt')
@@ -115,8 +130,8 @@ print('\nLoop finished :) trying preliminary plot of results\n')
 
 data1 = np.loadtxt('Results/final_populations_chi_and_t_f_substance_middle_chemotatic.txt')
 data2 = np.loadtxt('Results/final_populations_chi_and_t_f_substance_middle_nonchemotatic.txt')
-chi = np.concatenate((-np.flip(chis), [0], chis))
-t_f = np.array([float(200 + 20*j) for j in range(50)])
+chi = chis
+t_f = np.array([float(110 + 3*j) for j in range(30)])
 
 try:
     X, Y = np.meshgrid(t_f, chi)

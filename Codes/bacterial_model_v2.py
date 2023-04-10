@@ -17,7 +17,7 @@ k = 0.1
 chi = 315/3600 # μm²/h
 gamma = r/k
 lambd = 1.25 # mM/OD600*h
-q = 1 # μM/h
+q = 2 # μM/h
 beta = 1
 
 D_b = 50.2/3600 # μm²/h
@@ -60,14 +60,17 @@ end_time = time.time()
 print(f'Time taken to run simulation: {(end_time-start_time):.2f} seconds \n')
 
 plt.plot(tot_rho)
-plt.axvline(t_c, ls = '--')
-plt.xscale('log')
+plt.axvline(t_c/dt, ls = '--')
+# plt.text(0,0, tot_rho[int(np.round(t_c/dt, 0))])
+# plt.text(0,0.1, int(np.round(t_c/dt, 0)))
+# plt.text(0,0.2, t_c/dt)
+# plt.xscale('log')
 plt.show()
 
 # print(len(rhos))
 contour = plt.contourf(rhos, levels = 50, vmax = k, vmin = 0)
 plt.colorbar(contour)
-plt.yscale('log')
+# plt.yscale('log')
 plt.ylim(1e0, len(rhos))
 plt.show()
 
@@ -77,7 +80,7 @@ print('\nΔx = ', dx)
 
 # np.savetxt(f'Results/Densities_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', rhos)
 # np.savetxt(f'Results/Concentrations_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', Ss)
-np.savetxt(f'Results/Total_pop_bacterial_model_v2_chemotatic_ones_chi={chi}_alpha={alpha}.txt', tot_rho1)
+# np.savetxt(f'Results/Total_pop_bacterial_model_v2_chemotatic_ones_chi={chi}_alpha={alpha}.txt', tot_rho1)
 # np.savetxt(f'Results/Total_pop_bacterial_model_v2_nonchemotatic_ones_chi={chi}_alpha={alpha}.txt', tot_rho2)
 # np.savetxt(f'Results/delta_t_bacterial_model_v2_chi={chi}_alpha={alpha}.txt', np.array([dt]))
 

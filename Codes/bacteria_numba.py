@@ -5,7 +5,7 @@ from numba import njit
 
 # Solving the differential equation
 @njit
-def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta, S_plus, S_minus, S_max, dt_size):
+def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta, S_plus, S_minus, S_max, dt_size, automatic_stop = True, print_progress = True):
     # Defining the step in space and time
     dx = (x_max - x_min)/n
     dt = dx**2 / (2*dt_size*D_b)
@@ -35,14 +35,16 @@ def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c,
     i = 0
     while i < t_max:
         # print(rho)
-        if i % 20000 == 0:
-             print("Still computing... step:", i)
-        if np.abs(tot_rho[-1] - tot_rho[-2]) < 1e-9 and dt*i > 2*t_c:
-            break
+        if print_progress:
+            if i % 20000 == 0:
+                print("Still computing... step:", i)
+        if automatic_stop:
+            if np.abs(tot_rho[-1] - tot_rho[-2]) < 1e-9 and dt*i > 2*t_c:
+                break
         i += 1
     #for i in range(len(t)):
         # Loop in space
-        if i < t_c:
+        if dt*i < t_c:
             q_eff = 0
         else:
             q_eff = q
