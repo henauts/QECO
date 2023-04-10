@@ -79,7 +79,7 @@ for i in range(251):
         # if idx <= 50:
         #     print(f'\nRun in i = {i+1} of 250, j = {j+1} of 50... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)')
         # else:
-        print(f'Run in i = {i+1} of 251, j = {j+1} of 31... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)', end = '\r')
+        print(f'Run in i = {i+1} of 251, j = {j+1} of 31... Parameter values - chi: {chi:.3f}, t_f: {t_f}... excution time: {(end_time - start_time)/3600:.2f} hours... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)', end = '\r')
         bashCommand = f"python bacterial_model_v3.py {chi} {t_f}"
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()

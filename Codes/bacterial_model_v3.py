@@ -5,7 +5,7 @@ import time
 from bacteria_numba_natural_selection import solve_model
 import sys
 import os
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 if os.path.exists('Results') == False:
     os.makedirs('Results')
@@ -64,15 +64,15 @@ print('\nFinal interaction = ', idx)
 print('\nΔt = ', dt)
 print('\nΔx = ', dx)
 
-plt.plot(tot_rho1)
-plt.plot(tot_rho2)
-# plt.plot(tot_S)
-plt.show()
+# plt.plot(tot_rho1)
+# plt.plot(tot_rho2)
+# # plt.plot(tot_S)
+# plt.show()
 
 # np.savetxt(f'Results/Densities_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', rhos)
 # np.savetxt(f'Results/Concentrations_bacterial_model_v2_chi={chi}_t_c={t_c}.txt', Ss)
-# np.savetxt(f'Results/Total_pop_bacterial_model_v3_chemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho1)
-# np.savetxt(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho2)
-# np.savetxt(f'Results/delta_t_bacterial_model_v3_chi={chi}_t_f={t_f}.txt', np.array([dt]))
+np.savetxt(f'Results/Total_pop_bacterial_model_v3_chemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho1)
+np.savetxt(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho2)
+np.savetxt(f'Results/delta_t_bacterial_model_v3_chi={chi}_t_f={t_f}.txt', np.array([dt]))
 
 print('\nDONE! :)')
