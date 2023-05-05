@@ -27,6 +27,7 @@ def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c,
     
     #Dirac delta function
     dirac = np.zeros(n)
+    # print(x_l)
     dirac[int(x_l/dx)] = 1
     
     gamma = r/k
