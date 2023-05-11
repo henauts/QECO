@@ -11,17 +11,11 @@ print('Welcome to the ultra cool simulator. The code is about to run, to stop it
 
 print('\nRunning loop for checking chi and t_f!\n')
 
-<<<<<<< HEAD
-final_populations1 = np.zeros((251,30))
-final_populations2 = np.zeros((251,30))
-population1_tf = np.zeros((251,30))
-population2_tf = np.zeros((251,30))
-final_times = np.zeros((251,30))
-=======
 final_populations1 = np.zeros((251,31))
 final_populations2 = np.zeros((251,31))
+population1_tf = np.zeros((251,31))
+population2_tf = np.zeros((251,31))
 final_times = np.zeros((251,31))
->>>>>>> e0e52f762bd69cfbf8f31bdf00a97f79ea24c4ba
 chis = np.linspace(-0.3, 0.3, 251)
 # final_populations = np.zeros(200)
 # final_times = np.zeros(200)
@@ -73,7 +67,6 @@ np.savetxt('Results/final_times_chi_and_t_f_substance_middle.txt', final_times)
 #         np.savetxt('Results/final_times_chi_substance_middle_q=1.txt', final_time)
 #         os.remove(f'Results/Total_pop_bacterial_model_v2_chi={chi}_q=1.txt')
 #         os.remove(f'Results/delta_t_bacterial_model_v2_chi={chi}_q=1.txt')
-<<<<<<< HEAD
 
 print('\nInitiating tests to estimate time...\n')
 times_tests = []
@@ -87,37 +80,20 @@ for i in range(2):
         exec_test_time = (end_test_time - start_test_time)
         times_tests.append(exec_test_time)
 print(f'\nOne execution takes {np.mean(times_tests):.2f} +/- {np.std(times_tests):.2f} seconds. {int(final_populations1.shape[0]*final_populations1.shape[1])} executions will take an estimated time of {int(final_populations1.shape[0]*final_populations1.shape[1])*np.mean(times_tests)/3600:.2f} +/- {int(final_populations1.shape[0]*final_populations1.shape[1])*np.std(times_tests)/3600:.2f} hours.\n')
-=======
-start_test_time = time.time()
-bashCommand = f"python bacterial_model_v3.py {chis[10]} {150}"
-process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-output, error = process.communicate()
-end_test_time = time.time()
-exec_test_time = (end_test_time - start_test_time)
-print(f'One execution takes {exec_test_time:.2f} seconds. {int(final_populations1.shape[0]*final_populations1.shape[1])} executions will take an estimated time of {int(final_populations1.shape[0]*final_populations1.shape[1])*exec_test_time/3600:.2f} hours.')
->>>>>>> e0e52f762bd69cfbf8f31bdf00a97f79ea24c4ba
 
 print('\nStarting loop, relax and chill ;D\n')
 idx = 0
 start_time = time.time()
 for i in range(251):
     chi = chis[i]
-<<<<<<< HEAD
-    for j in range(30):
-=======
     for j in range(31):
->>>>>>> e0e52f762bd69cfbf8f31bdf00a97f79ea24c4ba
         t_f = 110 + 3*j
         idx += 1
         end_time = time.time()
         # if idx <= 50:
         #     print(f'\nRun in i = {i+1} of 250, j = {j+1} of 30... Parameter values - chi: {chi}, t_f: {t_f}... excution time: {(end_time - start_time)/60:.2f} min... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)')
         # else:
-<<<<<<< HEAD
-        print(f'Run in i = {i+1} of 251, j = {j+1} of 30... Parameter values - chi: {chi:.3f}, t_f: {t_f}... excution time: {(end_time - start_time)/3600:.2f} hours... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)', end = '\r')
-=======
         print(f'Run in i = {i+1} of 251, j = {j+1} of 31... Parameter values - chi: {chi:.3f}, t_f: {t_f}... excution time: {(end_time - start_time)/3600:.2f} hours... RAM usage: {psutil.virtual_memory()[3]/1000000000:.2f} GB ({psutil.virtual_memory()[2]:.2f}%)', end = '\r')
->>>>>>> e0e52f762bd69cfbf8f31bdf00a97f79ea24c4ba
         bashCommand = f"python bacterial_model_v3.py {chi} {t_f}"
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output, error = process.communicate()
@@ -155,11 +131,7 @@ print('\nLoop finished :) trying preliminary plot of results\n')
 data1 = np.loadtxt('Results/final_populations_chi_and_t_f_substance_middle_chemotatic.txt')
 data2 = np.loadtxt('Results/final_populations_chi_and_t_f_substance_middle_nonchemotatic.txt')
 chi = chis
-<<<<<<< HEAD
-t_f = np.array([float(110 + 3*j) for j in range(30)])
-=======
 t_f = np.array([float(110 + 3*j) for j in range(31)])
->>>>>>> e0e52f762bd69cfbf8f31bdf00a97f79ea24c4ba
 
 try:
     X, Y = np.meshgrid(t_f, chi)
