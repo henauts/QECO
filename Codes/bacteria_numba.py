@@ -86,8 +86,9 @@ def solve_model_optimized(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, l
 def solve_model(t_max, rho, S, x_min, x_max, n, D_s, D_b, chi, r, k, lambd, t_c, x_l, q, beta, S_plus, S_minus, S_max, dt_size, save_every = 100, automatic_stop = True, print_progress = True):
     # Defining the step in space and time
     dx = (x_max - x_min)/n
+    print(dx)
     dt = dx**2 / (2*dt_size*D_b)
-    # print(dt)
+    print(dt)
     # print(t_c/dt)
     # Defining space
     x = np.linspace(x_min, x_max, n)
