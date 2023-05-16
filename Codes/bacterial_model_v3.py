@@ -3,35 +3,38 @@ warnings.filterwarnings('ignore')
 import numpy as np
 import time
 # from bacteria_numba_natural_selection_v2 import solve_model
-from bacteria_numba import solve_model
+from bacteria_numba import solve_model, solve_model_optimized
 import sys
 import os
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 if os.path.exists('Results') == False:
     os.makedirs('Results')
 
 print("\nWelcome to the ultra cool bacterial dynamics simulator \n")
 
-r = 0.69
+r = 0.69/(3600) # s⁻¹
 k = 0.1
-chi = 315/1000
-gamma = r/k
+chi = 315/1000 # μm²/ms
+gamma = r/k                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 lambd = 1.25
-q = 1.5
+# q = 1.5
+q = float(sys.argv[1])/1e5 # μM/100s
 beta = 1
 alpha = 1
 
 D_b = 50.2/1000 # μm²/ms
-# D_s = 800/1000 # μm²/ms
-D_s = float(sys.argv[1])
+D_s = 800/1000 # μm²/ms
+# D_s = float(sys.argv[1])
 #D_s = 1e-1
 t_c = 100
 t_f = 400
-t_max = 1000000#*(t_c/128)
-dt_size = 128
-x_max = int(sys.argv[2])
-x_L = x_max/2
+t_max = 1000000000#*(t_c/128)
+dt_size = 64
+# x_max = int(sys.argv[2])
+x_max = 10
+# x_L = x_max/2
+x_L = float(sys.argv[2])
 dx = 0.1
 n = int(x_max/dx)
 S_plus = 30 # μM
@@ -46,8 +49,7 @@ rho = np.random.uniform(0.04, 0.04, n)
 
 print('\nReady to run simulations. Making a test before starting \n')
 
-test = solve_model(5, rho, S, 0, 10, n, D_s, D_b, chi, r, k, lambd, 1, 5, 0.6,
-                   beta, S_plus, S_minus, S_max, 32)
+test = solve_model(5, rho, S, 0, 10, n, D_s, D_b, chi, r, k, lambd, 1, 5, 0.6, beta, S_plus, S_minus, S_max, 32)
 
 print("\nTest concluded. Proceeding with simulation... \n")
 
@@ -55,7 +57,7 @@ print("\nTest concluded. Proceeding with simulation... \n")
 S = np.zeros(n)
 # rho1 = np.random.uniform(0.04, 0.04, n)
 # rho2 = rho1.copy()
-rho = np.random.uniform(0.04, 0.04, n)
+rho = np.random.uniform(k, k, n)
 
 start_time = time.time()
 
@@ -71,7 +73,7 @@ rhos, Ss, tot_rho, tot_S, idx, dx, dt, x = solve_model(t_max, rho, S, 0,
 
 end_time = time.time()
 
-print(f'Time taken to run simulation: {(end_time-start_time):.2f} seconds \n')
+print(f'Time taken to run simulation: {(end_time-start_time):.2f} sec \n')
 
 print('\nFinal interaction = ', idx)
 print('\nΔt = ', dt)
@@ -82,15 +84,19 @@ print('\nΔx = ', dx)
 # # plt.plot(tot_S)
 # plt.show()
 
-# plt.plot(tot_rho)
+plt.plot(tot_rho)
 # plt.plot(tot_S)
-# plt.show()
+plt.show()
+
+plt.plot(rhos[-1])
+plt.plot(Ss[-1])
+plt.show()
 
 # np.savetxt(f'Results/Densities_bacterial_model_v2_q={q}_x_L={x_L}.txt', rhos)
 # np.savetxt(f'Results/Concentrations_bacterial_model_v2_q={q}_x_L={x_L}.txt', Ss)
 # np.savetxt(f'Results/Total_pop_bacterial_model_v3_chemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho1)
 # np.savetxt(f'Results/Total_pop_bacterial_model_v3_nonchemotatic_ones_chi={chi}_t_f={t_f}.txt', tot_rho2)
-np.savetxt(f'Results/Total_pop_bacterial_model_v2_D_s={D_s:.4f}_L={x_max}.txt', tot_rho)
-np.savetxt(f'Results/delta_t_bacterial_model_v2_D_s={D_s:.4f}_L={x_max}.txt', np.array([dt]))
+# np.savetxt(f'Results/Total_pop_bacterial_model_v2_D_s={D_s:.4f}_L={x_max}.txt', tot_rho)
+# np.savetxt(f'Results/delta_t_bacterial_model_v2_D_s={D_s:.4f}_L={x_max}.txt', np.array([dt]))
 
 print('\nDONE! :)')
